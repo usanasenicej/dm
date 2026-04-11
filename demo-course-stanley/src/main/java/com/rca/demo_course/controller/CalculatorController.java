@@ -153,7 +153,23 @@ public class CalculatorController {
     }
 
     /**
+     * Calculates the modulo of two numbers.
+     *
+     * @param a first operand
+     * @param b second operand
+     * @return response map
+     */
+    @GetMapping("/modulo")
+    public ResponseEntity<Map<String, Object>> modulo(
+            @RequestParam double a,
+            @RequestParam double b) {
+        double result = calculatorService.modulo(a, b);
+        return ResponseEntity.ok(createResponse(a, b, result, "modulo"));
+    }
+
+    /**
      * Creates a standardized response for binary operations.
+
      *
      * @param a first operand
      * @param b second operand
