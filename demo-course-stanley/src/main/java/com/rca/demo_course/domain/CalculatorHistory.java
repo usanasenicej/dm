@@ -1,12 +1,17 @@
 package com.rca.demo_course.domain;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 /**
  * Domain model representing a calculation entry in history.
  */
+@Entity
+@Table(name = "calculator_history")
 public class CalculatorHistory {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private double operandA;
     private double operandB;
