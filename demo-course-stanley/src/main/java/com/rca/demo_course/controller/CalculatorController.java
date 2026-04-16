@@ -20,6 +20,9 @@ public class CalculatorController {
     @Autowired
     private CalculatorService calculatorService;
 
+    @Autowired
+    private CalculatorHistoryService historyService;
+
     /**
      * Adds two numbers.
      *
@@ -178,6 +181,15 @@ public class CalculatorController {
      * @return response map
      */
     private Map<String, Object> createResponse(double a, double b, double result, String operation) {
+        // Save to history
+        com.rca.demo_course.domain.CalculatorHistory history = new com.rca.demo_course.domain.CalculatorHistory();
+        history.setOperandA(a);
+        history.setOperandB(b);
+        history.setResult(result);
+        history.setOperation(operation);
+        history.setTimestamp(java.time.LocalDateTime.now());
+        historyService.saveHistory(history);
+
         Map<String, Object> response = new HashMap<>();
         response.put("a", a);
         response.put("b", b);
