@@ -244,4 +244,36 @@ public class CalculatorApplicationTests {
         assertEquals(HttpStatus.OK, response3.getStatusCode());
         assertEquals(0.0, response3.getBody().get("result"));
     }
+
+    @Test
+    @DisplayName("Modulo endpoint should work with real service")
+    void testModuloEndpointE2E() {
+        String url = getBaseUrl() + "/modulo?a=10.0&b=3.0";
+
+        ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
+        assertEquals(1.0, body.get("result"));
+        assertEquals("modulo", body.get("operation"));
+    }
+
+    @Test
+    @DisplayName("History endpoints should keep track of operations")
+    void testHistoryE2E() {
+        // Clear history first
+        String historyUrl = "http://localhost:" + port + "/api/history";
+        restTemplate.delete(historyUrl);
+
+        // Perform some operations
+        restTemplate.getForEntity(getBaseUrl() + "/add?a=10.0&b=20.0", Map.class);
+        restTemplate.getForEntity(getBaseUrl() + "/multiply?a=5.0&b=6.0", Map.class);
+
+        // Retrieve history
+        ResponseEntity<Object[]> historyResponse = restTemplate.getForEntity(historyUrl, Object[].class);
+
+        assertEquals(HttpStatus.OK, historyResponse.getStatusCode());
+        assertNotNull(historyResponse.getBody());
+        assertEquals(2, historyResponse.getBody().length, "History should contain 2 entries");
+    }
 }
