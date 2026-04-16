@@ -208,4 +208,27 @@ public class CalculatorTest {
     void testPercentageZeroBase() {
         assertEquals(0.0, calculator.percentage(0.0, 50.0), 0.001);
     }
+
+    @DisplayName("Modulo Tests")
+    @ParameterizedTest(name = "{0} % {1} = {2}")
+    @CsvSource({
+            "10.0, 3.0, 1.0",
+            "10.0, 5.0, 0.0",
+            "10.0, 4.0, 2.0",
+            "7.0, 2.0, 1.0",
+            "0.0, 5.0, 0.0",
+            "-10.0, 3.0, -1.0"
+    })
+    void testModulo(double a, double b, double expected) {
+        assertEquals(expected, calculator.modulo(a, b), 0.001,
+                () -> String.format("%f %% %f should equal %f", a, b, expected));
+    }
+
+    @DisplayName("Modulo by Zero Test")
+    @Test
+    void testModuloByZero() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> calculator.modulo(10.0, 0.0));
+        assertEquals("Modulo by zero is not allowed", exception.getMessage());
+    }
 }

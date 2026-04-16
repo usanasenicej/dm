@@ -151,4 +151,16 @@ public class CalculatorServiceTest {
         assertTrue(Double.isNaN(calculatorService.divide(Double.NaN, 5.0)));
         assertTrue(Double.isNaN(calculatorService.absolute(Double.NaN)));
     }
+
+    @Test
+    @DisplayName("Modulo should handle edge cases")
+    void testModuloEdgeCases() {
+        assertEquals(1.0, calculatorService.modulo(10.0, 3.0), 0.001);
+        assertEquals(0.0, calculatorService.modulo(10.0, 5.0), 0.001);
+        
+        // Test modulo by zero exception message
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> calculatorService.modulo(5.0, 0.0));
+        assertEquals("Modulo by zero is not allowed", exception.getMessage());
+    }
 }
