@@ -31,156 +31,77 @@ public class CalculatorController {
      * @return the sum of a and b
      */
     @GetMapping("/add")
-    public ResponseEntity<Map<String, Object>> add(
+    public ResponseEntity<CalculatorModel> add(
             @RequestParam double a,
             @RequestParam double b) {
         double result = calculatorService.add(a, b);
-        return ResponseEntity.ok(createResponse(a, b, result, "addition"));
+        return ResponseEntity.ok(processOperation(a, b, result, "addition"));
     }
 
-    /**
-     * Subtracts the second number from the first.
-     *
-     * @param a the first number
-     * @param b the number to subtract
-     * @return the difference of a and b
-     */
     @GetMapping("/subtract")
-    public ResponseEntity<Map<String, Object>> subtract(
+    public ResponseEntity<CalculatorModel> subtract(
             @RequestParam double a,
             @RequestParam double b) {
         double result = calculatorService.subtract(a, b);
-        return ResponseEntity.ok(createResponse(a, b, result, "subtraction"));
+        return ResponseEntity.ok(processOperation(a, b, result, "subtraction"));
     }
 
-    /**
-     * Multiplies two numbers.
-     *
-     * @param a the first number
-     * @param b the second number
-     * @return the product of a and b
-     */
     @GetMapping("/multiply")
-    public ResponseEntity<Map<String, Object>> multiply(
+    public ResponseEntity<CalculatorModel> multiply(
             @RequestParam double a,
             @RequestParam double b) {
         double result = calculatorService.multiply(a, b);
-        return ResponseEntity.ok(createResponse(a, b, result, "multiplication"));
+        return ResponseEntity.ok(processOperation(a, b, result, "multiplication"));
     }
 
-    /**
-     * Divides the first number by the second.
-     *
-     * @param a the dividend
-     * @param b the divisor
-     * @return the quotient of a and b
-     */
     @GetMapping("/divide")
-    public ResponseEntity<Map<String, Object>> divide(
+    public ResponseEntity<CalculatorModel> divide(
             @RequestParam double a,
             @RequestParam double b) {
         double result = calculatorService.divide(a, b);
-        return ResponseEntity.ok(createResponse(a, b, result, "division"));
+        return ResponseEntity.ok(processOperation(a, b, result, "division"));
     }
 
-    /**
-     * Raises the first number to the power of the second.
-     *
-     * @param base the base number
-     * @param exponent the exponent
-     * @return base raised to the power of exponent
-     */
     @GetMapping("/power")
-    public ResponseEntity<Map<String, Object>> power(
+    public ResponseEntity<CalculatorModel> power(
             @RequestParam double base,
             @RequestParam double exponent) {
         double result = calculatorService.power(base, exponent);
-        Map<String, Object> response = new HashMap<>();
-        response.put("base", base);
-        response.put("exponent", exponent);
-        response.put("result", result);
-        response.put("operation", "power");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(processOperation(base, exponent, result, "power"));
     }
 
-    /**
-     * Calculates the square root of a number.
-     *
-     * @param number the number to find the square root of
-     * @return the square root of the number
-     */
     @GetMapping("/sqrt")
-    public ResponseEntity<Map<String, Object>> squareRoot(@RequestParam double number) {
+    public ResponseEntity<CalculatorModel> squareRoot(@RequestParam double number) {
         double result = calculatorService.squareRoot(number);
-        Map<String, Object> response = new HashMap<>();
-        response.put("number", number);
-        response.put("result", result);
-        response.put("operation", "square root");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(processOperation(number, 0, result, "square root"));
     }
 
-    /**
-     * Calculates the absolute value of a number.
-     *
-     * @param number the number
-     * @return the absolute value of the number
-     */
     @GetMapping("/abs")
-    public ResponseEntity<Map<String, Object>> absolute(@RequestParam double number) {
+    public ResponseEntity<CalculatorModel> absolute(@RequestParam double number) {
         double result = calculatorService.absolute(number);
-        Map<String, Object> response = new HashMap<>();
-        response.put("number", number);
-        response.put("result", result);
-        response.put("operation", "absolute value");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(processOperation(number, 0, result, "absolute value"));
     }
 
-    /**
-     * Calculates the percentage of a number.
-     *
-     * @param number the base number
-     * @param percentage the percentage to calculate
-     * @return the percentage of the number
-     */
     @GetMapping("/percentage")
-    public ResponseEntity<Map<String, Object>> percentage(
+    public ResponseEntity<CalculatorModel> percentage(
             @RequestParam double number,
             @RequestParam double percentage) {
         double result = calculatorService.percentage(number, percentage);
-        Map<String, Object> response = new HashMap<>();
-        response.put("number", number);
-        response.put("percentage", percentage);
-        response.put("result", result);
-        response.put("operation", "percentage");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(processOperation(number, percentage, result, "percentage"));
     }
 
-    /**
-     * Calculates the modulo of two numbers.
-     *
-     * @param a first operand
-     * @param b second operand
-     * @return response map
-     */
     @GetMapping("/modulo")
-    public ResponseEntity<Map<String, Object>> modulo(
+    public ResponseEntity<CalculatorModel> modulo(
             @RequestParam double a,
             @RequestParam double b) {
         double result = calculatorService.modulo(a, b);
-        return ResponseEntity.ok(createResponse(a, b, result, "modulo"));
+        return ResponseEntity.ok(processOperation(a, b, result, "modulo"));
     }
 
     /**
-     * Creates a standardized response for binary operations.
-
-     *
-     * @param a first operand
-     * @param b second operand
-     * @param result calculation result
-     * @param operation operation name
-     * @return response map
+     * Processes the result, saves to history, and returns a model.
      */
-    private Map<String, Object> createResponse(double a, double b, double result, String operation) {
+    private CalculatorModel processOperation(double a, double b, double result, String operation) {
         // Save to history
         com.rca.demo_course.domain.CalculatorHistory history = new com.rca.demo_course.domain.CalculatorHistory();
         history.setOperandA(a);
@@ -190,11 +111,6 @@ public class CalculatorController {
         history.setTimestamp(java.time.LocalDateTime.now());
         historyService.saveHistory(history);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("a", a);
-        response.put("b", b);
-        response.put("result", result);
-        response.put("operation", operation);
-        return response;
+        return new CalculatorModel(a, b, result, operation);
     }
 }
