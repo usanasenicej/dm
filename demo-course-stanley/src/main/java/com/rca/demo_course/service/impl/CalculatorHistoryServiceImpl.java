@@ -28,6 +28,11 @@ public class CalculatorHistoryServiceImpl implements CalculatorHistoryService {
     }
 
     @Override
+    public List<CalculatorHistory> getHistoryByOperation(String operation) {
+        return historyRepository.findByOperationIgnoreCase(operation);
+    }
+
+    @Override
     public void clearHistory() {
         historyRepository.deleteAll();
     }

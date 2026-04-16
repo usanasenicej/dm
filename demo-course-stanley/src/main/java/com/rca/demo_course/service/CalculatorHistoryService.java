@@ -24,6 +24,14 @@ public interface CalculatorHistoryService {
     List<CalculatorHistory> getAllHistory();
 
     /**
+     * Retrieves history entries by operation name.
+     *
+     * @param operation the operation name
+     * @return a list of matching history entries
+     */
+    List<CalculatorHistory> getHistoryByOperation(String operation);
+
+    /**
      * Clears all calculation history.
      */
     void clearHistory();

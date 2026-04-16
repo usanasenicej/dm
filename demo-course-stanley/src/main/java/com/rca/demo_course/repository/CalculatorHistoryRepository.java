@@ -10,4 +10,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CalculatorHistoryRepository extends JpaRepository<CalculatorHistory, Long> {
+    /**
+     * Finds history entries by operation name.
+     *
+     * @param operation the operation name
+     * @return a list of matching entries
+     */
+    java.util.List<CalculatorHistory> findByOperationIgnoreCase(String operation);
 }

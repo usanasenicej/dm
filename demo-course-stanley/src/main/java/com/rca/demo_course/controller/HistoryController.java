@@ -20,12 +20,17 @@ public class HistoryController {
     private CalculatorHistoryService historyService;
 
     /**
-     * Retrieves all calculation history entries.
+     * Retrieves calculation history entries, optionally filtered by operation.
      *
+     * @param operation optional operation name to filter by
      * @return a list of history entries
      */
     @GetMapping
-    public ResponseEntity<List<CalculatorHistory>> getHistory() {
+    public ResponseEntity<List<CalculatorHistory>> getHistory(
+            @RequestParam(required = false) String operation) {
+        if (operation != null && !operation.isEmpty()) {
+            return ResponseEntity.ok(historyService.getHistoryByOperation(operation));
+        }
         return ResponseEntity.ok(historyService.getAllHistory());
     }
 
